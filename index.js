@@ -10,10 +10,8 @@ app.use(function (req, res, next) {
 app.get('/', (req, res) => {
     let name = req.query['n']
     let age = req.query['a']
-    const ioConnection = req.io;
-    ioConnection.emit('chat message', name);
     //io.emit('chat message', name);
-    //res.sendFile(__dirname + '/index.html');
+    res.sendFile(__dirname + '/index.html');
 });
 
 io.on('connection', function(socket){

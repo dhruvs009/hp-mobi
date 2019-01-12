@@ -2,37 +2,96 @@
 <html>
   <head>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
-        $(function () {
-        var socket = io();
-        $('form').submit(function(e){
-            e.preventDefault(); // prevents page reloading
-            socket.emit('chat message', $('#m').val());
-            $('#m').val('');
-            return false;
-        });
-        socket.on('chat message', function(msg){
-            $('#messages').append($('<li>').text(msg));
-        });
-    });
+        var currTime;
+        var socket;
+        var state = false;
+        document.addEventListener('DOMContentLoaded', init, false);
+        function init() {
+            socket = io.connect();
+            currTime = new Date()
+            currTime = currTime.getTime()
+            console.log('Engage');
+            window.addEventListener('devicemotion', motion, false);
+        }
+
+        let lastX, lastY, lastZ;
+        let moveCounter = 0;
+
+        function motion(e) {
+            let acc = e.acceleration;
+            let t = new Date();
+            //alert(t.getTime())
+            if(!acc.x) return;
+
+            //only log if x,y,z > 1
+            //console.log('motion', acc);
+            if(!lastX) {
+                lastX = acc.x;
+                lastY = acc.y;
+                lastZ = acc.z;
+                return;
+            }
+
+            let deltaX = Math.abs(acc.x - lastX);
+            let deltaY = Math.abs(acc.y - lastY);
+            let deltaZ = Math.abs(acc.z - lastZ);
+            document.getElementById('x').innerHTML = acc.x
+            
+            if(deltaX < 2) {
+                deltaX = 0;
+            } 
+            if (deltaY < 2) {
+                deltaY = 0;
+            }
+            if (deltaZ < 2) {
+                deltaZ = 0;
+            }
+
+            if (t.getTime() - currTime > 400 && state != true) {
+                //alert('Vasu')
+                if (acc.x > 10) {
+                    r = 200;
+                    document.getElementById('a').innerHTML = 'I did something'
+                    socket.emit('chat message', 'UP')
+                    currTime = t.getTime()
+                    state = true
+                }
+                if (acc.y > 10) {
+                    g = 200;
+                    currTime = t.getTime()
+                    socket.emit('chat message', 'FORWARD')
+                    state = true
+                }
+                if (acc.z > 10) {
+                    r = 200;
+                    currTime = t.getTime()
+                    socket.emit('chat message', 'SIDE')
+                    state = true
+                }
+                
+            }
+
+
+            if (t.getTime() - currTime > 700 && state != false) {
+                socket.emit('chat message', 'back to normal')
+                state = false
+            }
+
+            lastX = acc.x;
+            lastY = acc.y;
+            lastZ = acc.z;
+        }
     </script>
     <title>Socket.IO chat</title>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { font: 13px Helvetica, Arial; }
-      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-      #messages { list-style-type: none; margin: 0; padding: 0; }
-      #messages li { padding: 5px 10px; }
-      #messages li:nth-child(odd) { background: #eee; }
     </style>
   </head>
   <body>
-    <ul id="messages"></ul>
-    <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
-    </form>
+    <h1>SHAKE IT BABY</h1>
+    <div id="x"></div>
+    <div id="a"></div>
   </body>
 </html>
