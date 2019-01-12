@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Motion detection",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "express": "^4.16.4"
+  },
   "devDependencies": {},
   "scripts": {
     "start": "node index.js"
@@ -22,6 +24,6 @@
   },
   "homepage": "https://github.com/CrypticGuy/hp-mobi#readme",
   "engines": {
-    "node" : "8.x"
+    "node": "8.x"
   }
 }
