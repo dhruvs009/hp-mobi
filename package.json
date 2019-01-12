@@ -1,18 +1,27 @@
 {
-  "name": "harrypotter",
+  "name": "hp-mobi",
   "version": "1.0.0",
-  "description": "",
+  "description": "Motion detection",
   "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CrypticGuy/hp-mobi.git"
+  },
+  "keywords": [
+    "heroku"
+  ],
+  "author": "CODERS++",
   "license": "ISC",
-  "dependencies": {
-    "express": "^4.16.4",
-    "socket.io": "^2.2.0"
-  }
+  "bugs": {
+    "url": "https://github.com/CrypticGuy/hp-mobi/issues"
+  },
+  "homepage": "https://github.com/CrypticGuy/hp-mobi#readme",
   "engines": {
-    "node": "8.x"
+    "node" : "8.x"
   }
 }
