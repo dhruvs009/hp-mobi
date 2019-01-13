@@ -13,7 +13,7 @@ app.use(express.static('public'))
 var players =  {player0: null, player1: null}
 
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/home.html')
+    res.sendFile(__dirname + '/index.html')
 })
 
 app.get('/player', (req, res) => {
@@ -34,6 +34,7 @@ io.on('connection', function(socket){
     var userId;
     socket.emit('newUser', socket.id)
     socket.on('connectMe', function() {
+        console.log("Hey!!!")
         if (players['player0'] != null && players['player1'] != null) {
             userId = socket.id
             socket.emit('roomFull', "Apologies Room Is Full!")
@@ -62,9 +63,11 @@ io.on('connection', function(socket){
         }
         console.log('user disconnected');
     });
+
     socket.on('chat message', function(msg) {
         if (msg != 'back to normal') socket.send(msg)    
     });
+
     socket.on('spells', function(data) {
         console.log("Recieved: ", data)
         target = null;

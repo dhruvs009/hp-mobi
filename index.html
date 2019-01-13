@@ -10,31 +10,28 @@
   <body>
     <h1></h1>
     <div id="u">Player ID: <span id="user"></span></div>
-    <div id="a"></div>
+    <div id="x"></div>
     <h1 id="pen"></h1>
     <!--<button onPress="connectMe()">Connect</button>-->
     <script src="/socket.io/socket.io.js"></script>
     <script>
-    </script>
-    <script>
         var currTime;
-        var socket;
-        socket = io.connect();
-        socket.on('newUser', function(msg) {
-            if (sessionStorage) {
-                sessionStorage.setItem("user", msg)
-            }
-            localStorage.setItem("user", msg)
-            document.getElementById('user').innerHTML = sessionStorage.getItem("user")
-            //alert("Welcome " + sessionStorage.getItem("user"))
-        })
-        socket.emit('connectMe')
-        socket.on('message', function(msg) {
-            document.getElementById('pen').innerHTML = 'PENCHO'
-        })    
-        var state = false;
+        var socket;    
         document.addEventListener('DOMContentLoaded', init, true);
-        function init() { 
+        function init() {
+            socket = io.connect();
+            socket.on('newUser', function(msg) {
+                if (sessionStorage) {
+                    sessionStorage.setItem("user", msg)
+                }
+                localStorage.setItem("user", msg)
+                document.getElementById('user').innerHTML = sessionStorage.getItem("user")
+                //alert("Welcome " + sessionStorage.getItem("user"))
+            })
+            socket.emit('connectMe')
+            socket.on('message', function(msg) {
+                document.getElementById('pen').innerHTML = 'PENCHO'
+            }) 
             currTime = new Date()
             currTime = currTime.getTime()
             console.log('Engage');
@@ -46,11 +43,14 @@
         }
 
         let lastX, lastY, lastZ;
-        let moveCounter = 0;
 
         function motion(e) {
+            var state = false;
+            //socket.emit('spells', 'vasu')
             let acc = e.acceleration;
             let t = new Date();
+            let time = t.getTime();
+            
             //alert(t.getTime())
             if(!acc.x) return;
 
@@ -60,7 +60,7 @@
                 lastX = acc.x;
                 lastY = acc.y;
                 lastZ = acc.z;
-                return;
+                return ;
             }
 
             let deltaX = Math.abs(acc.x - lastX);
@@ -77,42 +77,41 @@
             if (deltaZ < 2) {
                 deltaZ = 0;
             }
-
-            if (t.getTime() - currTime > 400 && state != true) {
+            socket.emit('spells', time - currTime)
+            ///console.log(time, currTime)
+            if (time - currTime > 400 && state != false) {
                 //alert('Vasu')
                 taskAtHand = false
+                socket.emit('spells', 'vasu')
                 if (acc.x > 10) {
                     r = 200;
                     document.getElementById('a').innerHTML = 'I did something'
                     //socket.emit('chat message', 'UP')
-                    //socket.emit('spells', {'spell': 'UP', 'user': sessionStorage.getItem('user')})
+                    socket.emit('spells', {'spell': 'UP', 'user': sessionStorage.getItem('user')})
                     taskAtHand = 'UP'
-                    currTime = t.getTime()
+                    currTime = time
                     state = true
                 }
-                if (acc.y > 10) {
+                if (acc.y > 2) {
                     g = 200;
-                    currTime = t.getTime()
+                    currTime = time
                     //socket.emit('chat message', 'FORWARD')
-                    //socket.emit('spells', {'spell': 'FORWARD', 'user': sessionStorage.getItem('user')})
+                    socket.emit('spells', {'spell': 'FORWARD', 'user': sessionStorage.getItem('user')})
                     taskAtHand = 'FORWARD'
                     state = true
                 }
                 if (acc.z > 10) {
                     r = 200;
-                    currTime = t.getTime()
+                    currTime = time
                     //socket.emit('chat message', 'SIDE')
-                    //socket.emit('spells', {'spell': 'SIDE', 'user': sessionStorage.getItem('user')})
+                    socket.emit('spells', {'spell': 'SIDE', 'user': sessionStorage.getItem('user')})
                     taskAtHand = 'SIDE'
                     state = true
-                }
-                if (taskAtHand != false) {
-                    socket.emit('spells', {'spell': taskAtHand, 'user': sessionStorage.getItem('user')})
                 }
             }
 
 
-            if (t.getTime() - currTime > 1000 && state != false) {
+            if (time - currTime > 1000 && state != false) {
                 socket.emit('chat message', 'back to normal')
                 document.getElementById('pen').innerHTML = 'HATT'
                 state = false

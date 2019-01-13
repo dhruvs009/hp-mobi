@@ -23,7 +23,7 @@ function updateMoves(spell) {
   }
 }
 function setup(){
-  socket = io.connect('http://localhost:3000');
+  socket = io.connect();
   socket.on('move', function(data) {
     if (data['user'] == 0) {
       moves1[updateMoves(data['spell'])] = true
@@ -37,7 +37,7 @@ function setup(){
   //bulletImage = loadImage('fire_ball.png')
   //createCanvas(800,300);
   createCanvas(windowWidth, windowHeight)
-  boxSprite1 = createSprite(windoWidth/5, windowHeight/2, 50, 100);
+  boxSprite1 = createSprite(windowWidth/5, windowHeight/2, 50, 100);
   boxSprite1.shapeColor = color(222, 125, 2);
   boxSprite2 = createSprite(4*windowWidth/5, windowHeight/2, 50, 100);
   boxSprite2.shapeColor = color(255, 0, 0);
