@@ -181,14 +181,6 @@ function draw() {
     text("Game Over Player 1 WINS!!!",400,200)
   }
   
-  if(valcount2==2)
-  {
-    shield2.remove();
-  }
-  if(valcount1==2)
-  {
-    shield1.remove();
-  }
 } 
 function shielddel2(bullets1, shield2){
   bullets1.remove();

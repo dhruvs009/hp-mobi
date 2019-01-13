@@ -13,7 +13,7 @@ app.use(express.static('public'))
 var players =  {player0: null, player1: null}
 
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html')
+    res.sendFile(__dirname + '/home.html')
 })
 
 app.get('/player', (req, res) => {
@@ -65,7 +65,7 @@ io.on('connection', function(socket){
     });
 
     socket.on('chat message', function(msg) {
-        if (msg != 'back to normal') socket.send(msg)    
+        if (msg != 'back to normal') console.log(msg)   
     });
 
     socket.on('spells', function(data) {
@@ -76,7 +76,7 @@ io.on('connection', function(socket){
                 target = index
             }    
         })
-        console.log(target)
+        //console.log(target)
         socket.broadcast.emit('move', {
             "spell": data['spell'],
             //"user": players.indexOf(data['user'])
