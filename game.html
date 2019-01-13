@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+    </style>
+  </head>
+  <body>
+    <h1>SHAKE IT BABY</h1>
+    <div id="player0">PLAYER1: </div>
+    <div id="player1">PLAYER2: </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket;
+        socket = io.connect();
+        socket.emit('getUsers')
+        socket.on('recieveUsers', function(data){
+            if (data.players.length == 2) {
+                console.log("Ready For Game")
+            }
+        }) 
+        socket.on('move', function(data) {
+            document.getElementById(data['user']).innerHTML = data['user'] + " " + data['spell']
+        })
+    </script>
+  </body>
+</html>
