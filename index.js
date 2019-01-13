@@ -68,8 +68,20 @@ io.on('connection', function(socket){
         if (msg != 'back to normal') console.log(msg)   
     });
 
+    socket.on('movePlayer', function(data) {
+        target = null;
+        Object.keys(players).forEach(function(key, index) {
+            if (players[key] == userId) {
+                target = index
+            }    
+        })
+        //console.log(target, data)
+        //console.log("testing: " + data)
+        socket.broadcast.emit('translate', {'move': data, "user": target})
+    })
+
     socket.on('spells', function(data) {
-        console.log("Recieved: ", data)
+        //console.log("Recieved: ", data)
         target = null;
         Object.keys(players).forEach(function(key, index) {
             if (players[key] == userId) {

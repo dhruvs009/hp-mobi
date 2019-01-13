@@ -12,6 +12,8 @@ var bulletImage;
 var socket;
 var moves2 = [false, false, false];
 var moves1 = [false, false, false];
+var movement1 = [false, false, false];
+var movement2 = [false, false, false];
 function updateMoves(spell) {
   switch(spell) {
     case 'FORWARD': 
@@ -22,10 +24,22 @@ function updateMoves(spell) {
       return 2
   }
 }
+function moveMyCharacter(movement) {
+  switch(movement) {
+    case 'walk':
+      return 0
+    default:
+      if (movement > 0)
+        return 1
+      else return 2
+  }
+}
+
 function setup(){
   socket = io.connect();
   socket.on('move', function(data) {
     if (data['user'] == 0) {
+      console.log("SHOT")
       moves1[updateMoves(data['spell'])] = true
     }
     else {
@@ -33,6 +47,18 @@ function setup(){
     }
     //console.log(data)
   });
+
+  socket.on('translate', function(data) {
+    console.log("HERE")
+    if (data['user'] == 0) {
+      console.log("MOVED")
+      movement1[moveMyCharacter(data['move'])] = true
+      //alert('FORWARD')
+    }
+    else {
+      movement2[moveMyCharacter(data['move'])] = true
+    }
+  })
   bulletImage = loadImage('http://molleindustria.github.io/p5.play/examples/assets/asteroids_bullet.png')
   //bulletImage = loadImage('fire_ball.png')
   //createCanvas(800,300);
@@ -41,7 +67,7 @@ function setup(){
   boxSprite1.shapeColor = color(222, 125, 2);
   boxSprite2 = createSprite(4*windowWidth/5, windowHeight/2, 50, 100);
   boxSprite2.shapeColor = color(255, 0, 0);
-  boxSprite1.maxSpeed = 6;
+  boxSprite1.maxSpeed = 9;
   boxSprite1.friction = 0.1;
   boxSprite2.maxSpeed = 6;
   boxSprite2.friction = 0.1;
@@ -73,13 +99,19 @@ function draw() {
   drawSprites();
   textAlign(CENTER);
   text('AAPKA SWAGAT HAI',400,50);
-  if(keyDown(LEFT_ARROW))
-    boxSprite1.rotation -= 4;
-  if(keyDown(RIGHT_ARROW))
-    boxSprite1.rotation += 4;
-  if(keyDown(UP_ARROW))
+  if(keyDown(LEFT_ARROW) || movement1[2] == true) {
+    boxSprite1.rotation -= 6;
+    movement1[2] = false
+  } 
+  if(keyDown(RIGHT_ARROW) || movement1[1] == true)
+    {
+      boxSprite1.rotation += 6;
+      movement1[1] = false
+    }
+  if(keyDown(UP_ARROW) || movement1[0] == true)
   {
     boxSprite1.addSpeed(0.6, boxSprite1.rotation);
+    movement1[0] = false
   }
   //Damage 2 bullet P1
   if(keyWentDown('t') || moves1[2] == true)
@@ -112,13 +144,18 @@ function draw() {
     moves1[1] = false
   }
 
-  if(keyDown('a'))
+  if(keyDown('a') || movement2[2] == true) {
     boxSprite2.rotation -= 4;
-  if(keyDown('d'))
+    movement2[2] = false
+  }
+  if(keyDown('d') || movement2[1] == true) {
     boxSprite2.rotation += 4;
-  if(keyDown('w'))
+    movement2[1] = false
+  }
+  if(keyDown('w') || movement2[0] == true)
   {
     boxSprite2.addSpeed(0.5, boxSprite2.rotation);
+    movement2[0] = false
   }
   //Damage 2 bullet P2
   if(keyWentDown('z') || moves2[2] == true)

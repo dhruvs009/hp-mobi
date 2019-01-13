@@ -2,23 +2,30 @@
 <html>
   <head>
     <title>HARDLY PONDERED | CODERS++</title>
-    <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 13px Helvetica, Arial; }
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.min.js"></script>
+    <style type="text/css">
+        html,body { height: 100%; margin: 0px; padding: 0px; overflow: hidden}
+        #full { background: #0f0; height: 100%;}
     </style>
-  </head>
-  <body>
-    <h1></h1>
-    <div id="u">Player ID: <span id="user"></span></div>
-    <div id="x"></div>
-    <h1 id="pen"></h1>
+    </head>
+    <body>
+        <div id="full"></div>
+        <div class="w3-black w3-container w3-center minHeight">
+            <h1>DEVICE CONTROLLER</h1>
+            <h1 id="u">Player ID: <span id="user"></span></h1>
+            <div id="x"></div>
+            <h1 id="pen"></h1>
+            <div id="screen-log"></div>
+        </div>
     <!--<button onPress="connectMe()">Connect</button>-->
     <script src="/socket.io/socket.io.js"></script>
     <script>
         var currTime;
         var socket;    
         document.addEventListener('DOMContentLoaded', init, false);
+        document.addEventListener('mousemove', logKey);
         xyz = new Date()
+        var screenLog;
         currTime = xyz.getTime()
         function init() {
             socket = io.connect();
@@ -35,6 +42,7 @@
                 document.getElementById('pen').innerHTML = 'PENCHO'
             }) 
             console.log('Engage');
+            screenLog = document.querySelector('#screen-log');
             window.addEventListener('devicemotion', motion, false);
         }
         
@@ -77,46 +85,90 @@
             }
             //socket.emit('spells', time - currTime)
             ///console.log(time, currTime)
-            if (t.getTime() - currTime > 500 && state == false) {
+            if (t.getTime() - currTime > 600 && state == false) {
                 //alert('Vasu')
                 taskAtHand = false
                 //socket.emit('spells', 'vasu')
                 if (acc.x > 10) {
                     r = 200;
                     //socket.emit('chat message', 'UP')
-                    socket.emit('spells', {'spell': 'UP', 'user': sessionStorage.getItem('user')})
+                    taskAtHand = 'UP'
+                    //socket.emit('spells', {'spell': 'UP', 'user': sessionStorage.getItem('user')})
                     currTime = t.getTime()
+                    state = true
+                }
+                if (acc.z > 10) {
+                    r = 200;
+                    currTime = t.getTime()
+                    //socket.emit('chat message', 'SIDE')
+                    taskAtHand = 'SIDE'
+                    //socket.emit('spells', {'spell': 'SIDE', 'user': sessionStorage.getItem('user')})
                     state = true
                 }
                 if (acc.y > 10) {
                     g = 200;
                     currTime = t.getTime()
                     //socket.emit('chat message', 'FORWARD')
+                    taskAtHand = 'FORWARD'
                     state = true
-                    socket.emit('spells', {'spell': 'FORWARD', 'user': sessionStorage.getItem('user')})
-                    
+                    //socket.emit('spells', {'spell': 'FORWARD', 'user': sessionStorage.getItem('user')})
                 }
-                if (acc.z > 10) {
-                    r = 200;
-                    currTime = t.getTime()
-                    //socket.emit('chat message', 'SIDE')
-                    socket.emit('spells', {'spell': 'SIDE', 'user': sessionStorage.getItem('user')})
-                    state = true
+                if (taskAtHand != false) {
+                    socket.emit('spells', {'spell': taskAtHand, 'user': sessionStorage.getItem('user')})
+                    taskAtHand = false
                 }
+                
             }
 
             //socket.emit('spells', t.getTime() - currTime)
             
-            if ((t.getTime() - currTime) > 1200 && state == true) {
+            if ((t.getTime() - currTime) > 1000 && state == true) {
                 socket.emit('spells', t.getTime() + " " +currTime)
                 socket.emit('chat message', 'back to normal')
                 state = false
             }
-
+            
             lastX = acc.x;
             lastY = acc.y;
             lastZ = acc.z;
         }
+
+        function logKey(e) {
+            screenLog.innerText = `
+                Screen X/Y: ${e.screenX}, ${e.screenY}
+                Client X/Y: ${e.clientX}, ${e.clientY}`;
+            }
+    </script>
+    <script>
+        function setup() {
+            var canvas = createCanvas(windowWidth, windowHeight);
+            canvas.parent('full');
+            background(255, 0, 200);
+        }
+
+        function draw() {
+            fill(255, 0, 200);
+            rect(0, 0, width, height/2);
+            fill(0, 255, 200);
+            rect(0, height/2, width, height/2);
+            if (mouseIsPressed) {
+                if (mouseY > height/2) {
+                    //if (abs(pmouseX - mouseX) > 0.3 && abs(pmouseY - mouseY) > 0.3) {
+                    let amt = mouseX - width/2
+                    let rotFactor = amt/Math.abs(amt)
+                    socket.emit('movePlayer', rotFactor)
+                    //}
+                }
+                else {
+                    socket.emit('movePlayer', 'walk')
+                }
+            }
+        }
+
+        function mousePressed() {
+            
+        }
+
     </script>
   </body>
 </html>
