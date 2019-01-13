@@ -15,11 +15,15 @@ var moves1 = [false, false, false];
 var punch1;
 var punch2;
 var fireball;
+var final;
 var bg;
 var health1;
 var health2;
 var health3;
 var health4;
+var movement1 = [false, false, false];
+var movement2 = [false, false, false];
+
 function updateMoves(spell) {
   switch(spell) {
     case 'FORWARD': 
@@ -31,17 +35,30 @@ function updateMoves(spell) {
   }
 }
 
+function moveMyCharacter(movement) {
+  switch(movement) {
+    case 'walk':
+      return 0
+    default:
+      if (movement > 0)
+        return 1
+      else return 2
+  }
+}
 
-  
-
-function setup(){
-  bg=loadImage("grass.jpg")
+function preload() {
   punch1=loadSound('Shotgun+2.mp3');
   punch2=loadSound('Gun+1.mp3');
   fireball=loadSound('Fireball+1.mp3');
+  final=loadSound('final.mp3');
+}
+
+function setup(){
+  bg=loadImage("grass.jpg")
   socket = io.connect();
   socket.on('move', function(data) {
     if (data['user'] == 0) {
+      console.log("SHOT")
       moves1[updateMoves(data['spell'])] = true
     }
     else {
@@ -49,8 +66,9 @@ function setup(){
     }
     //console.log(data)
   });
-  bulletImage = loadImage('http://molleindustria.github.io/p5.play/examples/assets/asteroids_bullet.png');
-  powerbulletimg = loadImage('http://molleindustria.github.io/p5.play/examples/assets/asteroids_bullet.png');
+
+  bulletImage = loadImage('asteroids_bullet.png');
+  powerbulletimg = bulletImage;
   brickimg = loadImage('brick.png');
   soldierimg = loadImage('soldier2.png');
   //bulletImage = loadImage('fire_ball.png')
@@ -61,11 +79,24 @@ function setup(){
   boxSprite2 = createSprite(4*windowWidth/5+100, windowHeight/2, 50, 100);
   boxSprite2.addImage(soldierimg);
   boxSprite1.maxSpeed = 6;
+
+  socket.on('translate', function(data) {
+    console.log("HERE")
+    if (data['user'] == 0) {
+      console.log("MOVED")
+      movement1[moveMyCharacter(data['move'])] = true
+      //alert('FORWARD')
+    }
+    else {
+      movement2[moveMyCharacter(data['move'])] = true
+    }
+  })
+
   boxSprite1.friction = 0.1;
   boxSprite2.maxSpeed = 6;
   boxSprite2.friction = 0.1;
-  boxSprite1.setCollider('rectangle', 0, 0, 90,50);
-  boxSprite2.setCollider('rectangle', 0, 0, 90,50);
+  boxSprite1.setCollider('circle', 0, 0, 40);
+  boxSprite2.setCollider('circle', 0, 0, 40);
   boxSprite2.rotation+=180;
   obs1 = createSprite(300,150,100,100);
   obs1.addImage(brickimg);
@@ -115,18 +146,24 @@ function setup(){
   obstacles.add(obs5);
 }
 function draw() {
-  image(bg,0,0);
+  //image(bg,0,0);
   image(bg,0,0,windowWidth,windowHeight);
+  //background(0, 255, 0);
   drawSprites();
-  textAlign(CENTER);
-  text('AAPKA SWAGAT HAI',windowWidth/2,50);
-  if(keyDown(LEFT_ARROW))
-    boxSprite1.rotation -= 4;
-  if(keyDown(RIGHT_ARROW))
-    boxSprite1.rotation += 4;
-  if(keyDown(UP_ARROW))
+  if(keyDown(LEFT_ARROW) || movement1[2] == true) {
+    boxSprite1.rotation -= 6;
+    movement1[2] = false
+  } 
+  if(keyDown(RIGHT_ARROW) || movement1[1] == true)
+    {
+      boxSprite1.rotation += 6;
+      movement1[1] = false
+    }
+  if(keyDown(UP_ARROW) || movement1[0] == true)
+
   {
     boxSprite1.addSpeed(0.6, boxSprite1.rotation);
+    movement1[0] = false
   }
   //Damage 2 bullet P1
   if(keyWentDown('t') || moves1[2] == true)
@@ -153,7 +190,8 @@ function draw() {
   //Shield P1
   if(keyWentDown('u') || moves1[1] == true)
   {
-    var shield1 = createSprite(boxSprite1.position.x+40*Math.cos(3.14/180*boxSprite1.rotation), boxSprite1.position.y+40*Math.sin(3.14/180*boxSprite1.rotation), 10,100);
+    var shield1 = createSprite(boxSprite1.position.x+40*Math.cos(3.14/180*boxSprite1.rotation), boxSprite1.position.y+40*Math.sin(3.14/180*boxSprite1.rotation), 10,90);
+    shield1.shapeColor=color(0,0,0);
     shield1.immovable=true;
     shield1.rotation=boxSprite1.rotation;
     shield1.life = 200;
@@ -161,13 +199,18 @@ function draw() {
     moves1[1] = false
   }
 
-  if(keyDown('a'))
+  if(keyDown('a') || movement2[2] == true) {
     boxSprite2.rotation -= 4;
-  if(keyDown('d'))
+    movement2[2] = false
+  }
+  if(keyDown('d') || movement2[1] == true) {
     boxSprite2.rotation += 4;
-  if(keyDown('w'))
+    movement2[1] = false
+  }
+  if(keyDown('w') || movement2[0] == true)
   {
     boxSprite2.addSpeed(0.5, boxSprite2.rotation);
+    movement2[0] = false
   }
   //Damage 2 bullet P2
   if(keyWentDown('z') || moves2[2] == true)
@@ -197,7 +240,8 @@ function draw() {
   //Shield P2
   if(keyWentDown('c') || moves2[1] == true)
   {
-    var shield2 = createSprite(boxSprite2.position.x+40*Math.cos(3.14/180*boxSprite2.rotation), boxSprite2.position.y+40*Math.sin(3.14/180*boxSprite2.rotation), 10,100);
+    var shield2 = createSprite(boxSprite2.position.x+40*Math.cos(3.14/180*boxSprite2.rotation), boxSprite2.position.y+40*Math.sin(3.14/180*boxSprite2.rotation), 10,90);
+    shield2.shapeColor=color(0,0,0);
     shield2.immovable=true;
     shield2.rotation=boxSprite2.rotation;
     shield2.life = 400;
@@ -209,8 +253,6 @@ function draw() {
   bullets2.bounce(boxSprite1,health1);
   powerbullets1.bounce(boxSprite2,powerhealth2);
   powerbullets2.bounce(boxSprite1,powerhealth1);
-  bullets1.bounce(wallbot);
-  bullets2.bounce(wallbot);
   charac.bounce(wallbot);
   charac.bounce(walltop);
   charac.bounce(walllside);
@@ -233,13 +275,16 @@ function draw() {
   text("HITS : "+val1,300,50);
 
   if(val2>=10){
-
     text("Game Over Player 2 WINS!!!",windowWidth/2,200)
+    final.play();
+    noLoop();
   }
   if(val1>=10){
     text("Game Over Player 1 WINS!!!",windowWidth/2,200)
+    final.play();
+    noLoop();
   }
-  while(val1<=10){
+  /*if(val1<=10){
     health1=createSprite(150,75,100,20);
     health1.shapeColor=color(0,255,0);
     health2=createSprite(150,75,10*val1,20);
@@ -247,7 +292,7 @@ function draw() {
     
   }
   health3=createSprite(1200,75,100,20);
-  health3.shapeColor=color(0,255,0);
+  health3.shapeColor=color(0,255,0);*/
 } 
 function bullet1remove(bullets1){
   bullets1.remove()
