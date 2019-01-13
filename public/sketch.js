@@ -33,7 +33,7 @@ function setup(){
     }
     //console.log(data)
   });
-  //bulletImage = loadImage('http://molleindustria.github.io/p5.play/examples/assets/asteroids_bullet.png')
+  bulletImage = loadImage('http://molleindustria.github.io/p5.play/examples/assets/asteroids_bullet.png')
   //bulletImage = loadImage('fire_ball.png')
   createCanvas(800,300);
   //createCanvas(windowWidth, windowHeight)

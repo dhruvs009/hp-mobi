@@ -8,11 +8,11 @@
     </style>
   </head>
   <body>
-    <h1>SHAKE IT BABY</h1>
-    <div id="x"></div>
+    <h1></h1>
+    <div id="u">Player ID: <span id="user"></span></div>
     <div id="a"></div>
     <h1 id="pen"></h1>
-    <button onPress="connectMe()">Connect</button>
+    <!--<button onPress="connectMe()">Connect</button>-->
     <script src="/socket.io/socket.io.js"></script>
     <script>
     </script>
@@ -25,7 +25,8 @@
                 sessionStorage.setItem("user", msg)
             }
             localStorage.setItem("user", msg)
-            alert("Welcome " + sessionStorage.getItem("user"))
+            document.getElementById('user').innerHTML = sessionStorage.getItem("user")
+            //alert("Welcome " + sessionStorage.getItem("user"))
         })
         socket.emit('connectMe')
         socket.on('message', function(msg) {
