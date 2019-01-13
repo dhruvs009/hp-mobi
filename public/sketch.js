@@ -37,9 +37,9 @@ function setup(){
   //bulletImage = loadImage('fire_ball.png')
   //createCanvas(800,300);
   createCanvas(windowWidth, windowHeight)
-  boxSprite1 = createSprite(200, 320, 50, 100);
+  boxSprite1 = createSprite(windoWidth/5, windowHeight/2, 50, 100);
   boxSprite1.shapeColor = color(222, 125, 2);
-  boxSprite2 = createSprite(880, 320, 50, 100);
+  boxSprite2 = createSprite(4*windowWidth/5, windowHeight/2, 50, 100);
   boxSprite2.shapeColor = color(255, 0, 0);
   boxSprite1.maxSpeed = 6;
   boxSprite1.friction = 0.1;
@@ -79,7 +79,7 @@ function draw() {
     boxSprite1.rotation += 4;
   if(keyDown(UP_ARROW))
   {
-    boxSprite1.addSpeed(0.2, boxSprite1.rotation);
+    boxSprite1.addSpeed(0.6, boxSprite1.rotation);
   }
   //Damage 2 bullet P1
   if(keyWentDown('t') || moves1[2] == true)
@@ -118,7 +118,7 @@ function draw() {
     boxSprite2.rotation += 4;
   if(keyDown('w'))
   {
-    boxSprite2.addSpeed(0.2, boxSprite2.rotation);
+    boxSprite2.addSpeed(0.5, boxSprite2.rotation);
   }
   //Damage 2 bullet P2
   if(keyWentDown('z') || moves2[2] == true)
