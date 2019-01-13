@@ -1,8 +1,13 @@
 var boxSprite1 = {};
 var boxSprite2 = {};
 var wallbot;
+var wallrside;
+var walllside;
+var walltop;
 var val1=0;
 var val2=0;
+var valcount1=0;
+var valcount2=0;
 var bulletImage;
 var socket;
 var moves2 = [false, false, false];
@@ -99,7 +104,7 @@ function draw() {
   //Shield P1
   if(keyWentDown('u') || moves1[1] == true)
   {
-    var shield1 = createSprite(boxSprite1.position.x+40, boxSprite1.position.y, 10,100);
+    var shield1 = createSprite(boxSprite1.position.x+40*Math.cos(3.14/180*boxSprite1.rotation), boxSprite1.position.y+40*Math.sin(3.14/180*boxSprite1.rotation), 10,100);
     shield1.immovable=true;
     shield1.rotation=boxSprite1.rotation;
     shield1.life = 200;
@@ -139,7 +144,7 @@ function draw() {
   //Shield P2
   if(keyWentDown('c') || moves2[1] == true)
   {
-    var shield2 = createSprite(boxSprite2.position.x-40, boxSprite2.position.y, 10,100);
+    var shield2 = createSprite(boxSprite2.position.x+40*Math.cos(3.14/180*boxSprite2.rotation), boxSprite2.position.y+40*Math.sin(3.14/180*boxSprite2.rotation), 10,100);
     shield2.immovable=true;
     shield2.rotation=boxSprite2.rotation;
     shield2.life = 400;
@@ -159,23 +164,39 @@ function draw() {
   charac.bounce(wallrside);
   bullets1.bounce(shields2,shielddel2);
   bullets2.bounce(shields1,shielddel1);
+  charac.bounce(wallbot);
+  charac.bounce(walltop);
+  charac.bounce(walllside);
+  charac.bounce(wallrside);
   powerbullets1.bounce(shields2,powershielddel2);
   powerbullets2.bounce(shields1,powershielddel1);
   text("HITS : "+val2,650,150);
   text("HITS : "+val1,150,150);
 
   if(val2>=10){
+
     text("Game Over Player 2 WINS!!!",400,200)
   }
   if(val1>=10){
     text("Game Over Player 1 WINS!!!",400,200)
   }
+  
+  if(valcount2==2)
+  {
+    shield2.remove();
+  }
+  if(valcount1==2)
+  {
+    shield1.remove();
+  }
 } 
 function shielddel2(bullets1, shield2){
   bullets1.remove();
+  valcount2++;
 }
 function shielddel1(bullets2, shield1){
   bullets2.remove();
+  valcount1++;
 }
 function powershielddel2(powerbullets1, shield2){
   shield2.remove();
