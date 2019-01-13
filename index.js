@@ -13,6 +13,10 @@ app.use(express.static('public'))
 var players =  {player0: null, player1: null}
 
 app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/home.html')
+})
+
+app.get('/player', (req, res) => {
     //io.emit('chat message', name);
     res.sendFile(__dirname + '/index.html');
 });

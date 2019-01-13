@@ -28,7 +28,8 @@ function setup(){
     }
     //console.log(data)
   });
-  bulletImage = loadImage('http://molleindustria.github.io/p5.play/examples/assets/asteroids_bullet.png')
+  //bulletImage = loadImage('http://molleindustria.github.io/p5.play/examples/assets/asteroids_bullet.png')
+  //bulletImage = loadImage('fire_ball.png')
   createCanvas(800,300);
   //createCanvas(windowWidth, windowHeight)
   boxSprite1 = createSprite(100, 200, 50, 100);
@@ -39,11 +40,18 @@ function setup(){
   boxSprite1.friction = 0.1;
   boxSprite2.maxSpeed = 6;
   boxSprite2.friction = 0.1;
-  boxSprite1.setCollider('circle', 0, 0, 20);
-  boxSprite2.setCollider('circle', 0, 0, 20);
+  boxSprite1.setCollider('rectangle', 0, 0, 50,100);
+  boxSprite2.setCollider('rectangle', 0, 0, 50,100);
   boxSprite2.rotation+=180;
   wallbot = createSprite(width/2, height+30/2, width, 30);
   wallbot.immovable = true;
+  walltop = createSprite(width/2, -30/2, width, 30);
+  walltop.immovable = true;
+  wallrside = createSprite(-150, 150, height, height);
+  wallrside.immovable = true;
+  walllside = createSprite(950, 150, height, height);
+  wallrside.shapeColor = color(0,255,255)
+  walllside.immovable = true;
 
   bullets1 = new Group();
   bullets2 = new Group();
@@ -51,6 +59,9 @@ function setup(){
   shields2 = new Group();
   powerbullets1 = new Group();
   powerbullets2 = new Group();
+  charac = new Group();
+  charac.add(boxSprite1);
+  charac.add(boxSprite2);
 }
 function draw() {
   background(0, 255, 0);
@@ -142,6 +153,10 @@ function draw() {
   powerbullets2.bounce(boxSprite1,powerhealth1);
   bullets1.bounce(wallbot);
   bullets2.bounce(wallbot);
+  charac.bounce(wallbot);
+  charac.bounce(walltop);
+  charac.bounce(walllside);
+  charac.bounce(wallrside);
   bullets1.bounce(shields2,shielddel2);
   bullets2.bounce(shields1,shielddel1);
   powerbullets1.bounce(shields2,powershielddel2);
@@ -149,10 +164,10 @@ function draw() {
   text("HITS : "+val2,650,150);
   text("HITS : "+val1,150,150);
 
-  if(boxSprite1.position.x>=825 || boxSprite1.position.x<=-25){
+  if(val2>=10){
     text("Game Over Player 2 WINS!!!",400,200)
   }
-  if(boxSprite2.position.x>=825 || boxSprite2.position.x<=-25){
+  if(val1>=10){
     text("Game Over Player 1 WINS!!!",400,200)
   }
 } 
