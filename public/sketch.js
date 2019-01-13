@@ -35,11 +35,11 @@ function setup(){
   });
   bulletImage = loadImage('http://molleindustria.github.io/p5.play/examples/assets/asteroids_bullet.png')
   //bulletImage = loadImage('fire_ball.png')
-  createCanvas(800,300);
-  //createCanvas(windowWidth, windowHeight)
-  boxSprite1 = createSprite(100, 200, 50, 100);
+  //createCanvas(800,300);
+  createCanvas(windowWidth, windowHeight)
+  boxSprite1 = createSprite(200, 480, 50, 100);
   boxSprite1.shapeColor = color(222, 125, 2);
-  boxSprite2 = createSprite(700, 200, 50, 100);
+  boxSprite2 = createSprite(880, 480, 50, 100);
   boxSprite2.shapeColor = color(255, 0, 0);
   boxSprite1.maxSpeed = 6;
   boxSprite1.friction = 0.1;
