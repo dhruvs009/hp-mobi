@@ -77,7 +77,7 @@ function draw() {
   //Shield P1
   if(keyWentDown('u'))
   {
-    var shield1 = createSprite(boxSprite1.position.x+40, boxSprite1.position.y, 10,100);
+    var shield1 = createSprite(boxSprite1.position.x+40*Math.cos(3.14/180*boxSprite1.rotation), boxSprite1.position.y+40*Math.sin(3.14/180*boxSprite1.rotation), 10,100);
     shield1.immovable=true;
     shield1.rotation=boxSprite1.rotation;
     shield1.life = 400;
@@ -112,7 +112,7 @@ function draw() {
   //Shield P2
   if(keyWentDown('c'))
   {
-    var shield2 = createSprite(boxSprite2.position.x-40, boxSprite2.position.y, 10,100);
+    var shield2 = createSprite(boxSprite2.position.x+40*Math.cos(3.14/180*boxSprite2.rotation), boxSprite2.position.y+40*Math.sin(3.14/180*boxSprite2.rotation), 10,100);
     shield2.immovable=true;
     shield2.rotation=boxSprite2.rotation;
     shield2.life = 400;
