@@ -52,9 +52,9 @@ function setup(){
   wallbot.immovable = true;
   walltop = createSprite(width/2, -30/2, width, 30);
   walltop.immovable = true;
-  wallrside = createSprite(-150, 150, height, height);
+  wallrside = createSprite(width + height/2, height/2, height, height);
   wallrside.immovable = true;
-  walllside = createSprite(950, 150, height, height);
+  walllside = createSprite(-1*height/2, height/2, height, height);
   wallrside.shapeColor = color(0,255,255)
   walllside.immovable = true;
 
