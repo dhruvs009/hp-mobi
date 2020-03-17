@@ -15,6 +15,7 @@ We bring to you, the wizarding world of HARDLY PONDERED. And exactly like the wo
 
 ## HOW TO USE
 You need to just clone the repository and cd into the folder and perform<br />
+`cd src`<br />
 `npm install`<br />
 `node index.js`<br /> 
 
